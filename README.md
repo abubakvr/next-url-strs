@@ -1,5 +1,7 @@
 # Stears URL shortener (Next.js, single app)
 
+**Live:** [https://shorten.abubakar.life](https://shorten.abubakar.life)
+
 One Next.js process serves the UI, JSON API, and `GET /s/:code` redirects. Data lives in **PostgreSQL** via `pg` (no separate API server).
 
 **Prerequisites:** Node **20+** (`package.json` → `engines`), Docker + Compose if you use the supplied stack.
