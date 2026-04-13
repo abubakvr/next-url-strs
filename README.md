@@ -32,7 +32,7 @@ npm install
 npm run dev
 ```
 
-Open `PUBLIC_BASE_URL` (e.g. [http://localhost:3000](http://localhost:3000)); admin UI at `/admin`.
+Open `PUBLIC_BASE_URL` (e.g. [http://localhost:4405](http://localhost:4405)); admin UI at `/admin`.
 
 **Production-shaped local run:**
 

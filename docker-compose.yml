@@ -64,6 +64,10 @@ services:
 networks:
   app:
     driver: bridge
+  payup_network:
+    external: true
+  payup_staging_network:
+    external: true
 
 volumes:
   pg_data:

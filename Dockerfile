@@ -32,8 +32,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY package.json package-lock.json* ./
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-EXPOSE 3000
-CMD ["sh", "-c", "npm run dev -- --hostname 0.0.0.0 --port ${PORT:-3000}"]
+EXPOSE 4405
+CMD ["sh", "-c", "npm run dev -- --hostname 0.0.0.0 --port ${PORT:-4405}"]
 
 # Production: standalone only (default stage for `docker build` / compose `web`).
 FROM node:20-alpine3.20 AS runner
