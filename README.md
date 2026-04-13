@@ -67,7 +67,7 @@ src/
 | `DATABASE_URL` | **Required on the host** for `npm run dev` / `start`. Omitted for compose-only runs — `web` gets `DATABASE_URL` from `docker-compose.yml`. |
 | `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | **Required** for Compose and DB URL interpolation. |
 | `PUBLIC_BASE_URL` | Public origin for short URLs in API responses (no trailing slash). |
-| `ADMIN_TOKEN` | Secret for `/api/admin/*`; send `Authorization: Bearer <token>` or `X-Admin-Token`. |
+| `ADMIN_TOKEN` | Secret for `/api/admin/*`; send `Authorization: Bearer <token>` or `X-Admin-Token`. If unset or empty, the server uses the built-in testing default `adminpass1234` (set a strong value in production). |
 | `TRUST_PROXY` | `0` or `1`. Use `1` only behind a **trusted** reverse proxy so `X-Forwarded-For` is meaningful. |
 | `BLOCK_INTERNAL_URLS` | `0` or `1` — reject obvious private/loopback hostnames when shortening. |
 

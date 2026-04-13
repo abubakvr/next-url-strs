@@ -1,9 +1,19 @@
 import { config } from "dotenv";
 import { z } from "zod";
+import { DEMO_ADMIN_PASSWORD } from "./constants";
 
 config({ quiet: true });
 
 const flag01 = z.enum(["0", "1"]);
+
+const adminTokenSchema = z.preprocess(
+  (v) => {
+    if (v === undefined || v === null) return DEMO_ADMIN_PASSWORD;
+    const s = String(v).trim();
+    return s === "" ? DEMO_ADMIN_PASSWORD : s;
+  },
+  z.string().min(8, "ADMIN_TOKEN must be at least 8 characters"),
+);
 
 const EnvSchema = z.object({
   PORT: z.string().min(1, "PORT is required"),
@@ -15,7 +25,7 @@ const EnvSchema = z.object({
     .string()
     .url()
     .describe("Public origin used to build short URLs (no trailing slash)"),
-  ADMIN_TOKEN: z.string().min(8, "ADMIN_TOKEN must be a long random secret"),
+  ADMIN_TOKEN: adminTokenSchema,
   TRUST_PROXY: flag01.transform((v) => v === "1"),
   BLOCK_INTERNAL_URLS: flag01.transform((v) => v === "1"),
 });

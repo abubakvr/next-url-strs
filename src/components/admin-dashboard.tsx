@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { DEMO_ADMIN_PASSWORD } from "@/lib/constants";
 
 const TOKEN_KEY = "url-shortener-admin-token";
 
@@ -52,9 +53,10 @@ export function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [clicks, setClicks] = useState<ClickItem[]>([]);
-  const [summary, setSummary] = useState<{ linkCount: number; clickCount: number } | null>(
-    null,
-  );
+  const [summary, setSummary] = useState<{
+    linkCount: number;
+    clickCount: number;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -62,44 +64,41 @@ export function AdminDashboard() {
     if (stored) setToken(stored);
   }, []);
 
-  const loadData = useCallback(
-    async (t: string) => {
-      setError(null);
-      setLoading(true);
-      try {
-        const [linksR, clicksR, sumR] = await Promise.all([
-          adminJson<{ items: LinkItem[] }>("/api/admin/links?limit=200", t),
-          adminJson<{ items: ClickItem[] }>("/api/admin/clicks?limit=100", t),
-          adminJson<{ linkCount: number; clickCount: number }>(
-            "/api/admin/summary",
-            t,
-          ),
-        ]);
-        if (
-          (!linksR.ok && linksR.status === 401) ||
-          (!clicksR.ok && clicksR.status === 401) ||
-          (!sumR.ok && sumR.status === 401)
-        ) {
-          sessionStorage.removeItem(TOKEN_KEY);
-          setToken(null);
-          setError("Invalid or expired admin token.");
-          return;
-        }
-        if (!linksR.ok || !clicksR.ok || !sumR.ok) {
-          setError("Failed to load admin data.");
-          return;
-        }
-        setLinks(linksR.data.items);
-        setClicks(clicksR.data.items);
-        setSummary(sumR.data);
-      } catch {
-        setError("Network error");
-      } finally {
-        setLoading(false);
+  const loadData = useCallback(async (t: string) => {
+    setError(null);
+    setLoading(true);
+    try {
+      const [linksR, clicksR, sumR] = await Promise.all([
+        adminJson<{ items: LinkItem[] }>("/api/admin/links?limit=200", t),
+        adminJson<{ items: ClickItem[] }>("/api/admin/clicks?limit=100", t),
+        adminJson<{ linkCount: number; clickCount: number }>(
+          "/api/admin/summary",
+          t,
+        ),
+      ]);
+      if (
+        (!linksR.ok && linksR.status === 401) ||
+        (!clicksR.ok && clicksR.status === 401) ||
+        (!sumR.ok && sumR.status === 401)
+      ) {
+        sessionStorage.removeItem(TOKEN_KEY);
+        setToken(null);
+        setError("Invalid or expired admin token.");
+        return;
       }
-    },
-    [],
-  );
+      if (!linksR.ok || !clicksR.ok || !sumR.ok) {
+        setError("Failed to load admin data.");
+        return;
+      }
+      setLinks(linksR.data.items);
+      setClicks(clicksR.data.items);
+      setSummary(sumR.data);
+    } catch {
+      setError("Network error");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (token) void loadData(token);
@@ -125,9 +124,19 @@ export function AdminDashboard() {
   if (!token) {
     return (
       <div className="w-full max-w-md space-y-4">
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100">
+          <span className="font-medium">Testing:</span> use password{" "}
+          <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono text-xs dark:bg-amber-900/80">
+            {DEMO_ADMIN_PASSWORD}
+          </code>{" "}
+          (same as the default{" "}
+          <code className="rounded bg-amber-100 px-1 font-mono text-xs dark:bg-amber-900/80">
+            ADMIN_TOKEN
+          </code>
+          ).
+        </p>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          Enter the admin token configured in <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-900">ADMIN_TOKEN</code>.
-          Stored in <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-900">sessionStorage</code> for this tab only (demo-grade, not production secret storage).
+          Enter that value below
         </p>
         <form onSubmit={saveToken} className="space-y-3">
           <input
@@ -151,7 +160,10 @@ export function AdminDashboard() {
           </p>
         ) : null}
         <p className="text-center text-sm">
-          <Link href="/" className="text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300">
+          <Link
+            href="/"
+            className="text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
+          >
             ← Back
           </Link>
         </p>
@@ -215,7 +227,10 @@ export function AdminDashboard() {
               {links.map((row) => (
                 <tr key={row.code} className="text-zinc-800 dark:text-zinc-100">
                   <td className="px-3 py-2 font-mono text-xs">{row.code}</td>
-                  <td className="max-w-xs truncate px-3 py-2" title={row.longUrl}>
+                  <td
+                    className="max-w-xs truncate px-3 py-2"
+                    title={row.longUrl}
+                  >
                     {row.longUrl}
                   </td>
                   <td className="px-3 py-2">{row.clickCount}</td>
@@ -248,7 +263,10 @@ export function AdminDashboard() {
             </thead>
             <tbody className="divide-y divide-zinc-100 bg-white dark:divide-zinc-800 dark:bg-zinc-950">
               {clicks.map((row, i) => (
-                <tr key={`${row.createdAt}-${i}`} className="text-zinc-800 dark:text-zinc-100">
+                <tr
+                  key={`${row.createdAt}-${i}`}
+                  className="text-zinc-800 dark:text-zinc-100"
+                >
                   <td
                     className="whitespace-nowrap px-3 py-2 text-xs text-zinc-500"
                     title={row.createdAt}
@@ -256,8 +274,13 @@ export function AdminDashboard() {
                     {formatAdminDateTime(row.createdAt)}
                   </td>
                   <td className="px-3 py-2 font-mono text-xs">{row.code}</td>
-                  <td className="px-3 py-2 font-mono text-xs">{row.ip ?? "—"}</td>
-                  <td className="max-w-md truncate px-3 py-2 text-xs" title={row.userAgent ?? ""}>
+                  <td className="px-3 py-2 font-mono text-xs">
+                    {row.ip ?? "—"}
+                  </td>
+                  <td
+                    className="max-w-md truncate px-3 py-2 text-xs"
+                    title={row.userAgent ?? ""}
+                  >
                     {row.userAgent ?? "—"}
                   </td>
                 </tr>

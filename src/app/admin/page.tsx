@@ -8,7 +8,8 @@ export default function AdminPage() {
           Admin
         </h1>
         <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          View all short links, click counts, and recent visits (sign in with your admin token).
+          View all short links, click counts, and recent visits. For local testing, sign in with the
+          password shown below (override with <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-900">ADMIN_TOKEN</code> in production).
         </p>
       </div>
       <AdminDashboard />
