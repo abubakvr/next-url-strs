@@ -8,8 +8,7 @@ export default function Home() {
           Shorten your links
         </h1>
         <p className="mt-3 text-balance text-zinc-600 dark:text-zinc-400">
-          Paste a long URL and get a compact link you can share. This app is built with
-          Next.js—UI, API, and redirects in one place—with PostgreSQL behind the scenes.
+          Paste a long URL and get a compact link you can share.
         </p>
       </div>
       <ShortenForm />

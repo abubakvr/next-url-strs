@@ -33,6 +33,26 @@ function formatAdminDateTime(iso: string): string {
   }).format(d);
 }
 
+// Helper to mask IPv4 or IPv6 addresses, e.g. "123.456.78.90" → "123.456.***.***"
+function maskIp(ip: string | null): string {
+  if (!ip) return "—";
+  // IPv4 mask: keep first 2 octets
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) {
+    const parts = ip.split(".");
+    if (parts.length === 4) {
+      return `${parts[0]}.${parts[1]}.***.***`;
+    }
+  }
+  // IPv6 mask: keep first 2 hextets, mask rest
+  if (/^[\da-fA-F:]+$/.test(ip) && ip.includes(":")) {
+    const parts = ip.split(":");
+    const shown = parts.slice(0, 2).join(":");
+    return `${shown}:****:****:****`;
+  }
+  // If some corner-case, just partially mask
+  return ip.length > 6 ? `${ip.slice(0, 4)}***` : "***";
+}
+
 async function adminJson<T>(
   path: string,
   token: string,
@@ -270,7 +290,7 @@ export function AdminDashboard() {
                   </td>
                   <td className="px-3 py-2 font-mono text-xs">{row.code}</td>
                   <td className="px-3 py-2 font-mono text-xs">
-                    {row.ip ?? "—"}
+                    {maskIp(row.ip)}
                   </td>
                   <td
                     className="max-w-md truncate px-3 py-2 text-xs"
