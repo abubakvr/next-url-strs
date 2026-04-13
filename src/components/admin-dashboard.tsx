@@ -129,11 +129,6 @@ export function AdminDashboard() {
           <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono text-xs dark:bg-amber-900/80">
             {DEMO_ADMIN_PASSWORD}
           </code>{" "}
-          (same as the default{" "}
-          <code className="rounded bg-amber-100 px-1 font-mono text-xs dark:bg-amber-900/80">
-            ADMIN_TOKEN
-          </code>
-          ).
         </p>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           Enter that value below
